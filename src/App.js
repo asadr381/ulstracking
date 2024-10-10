@@ -1,6 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import axios from "axios";
+import { HotTable } from "@handsontable/react";
+import { registerAllModules } from "handsontable/registry";
+import "handsontable/dist/handsontable.full.min.css";
 import './App.css';
+
+// Register Handsontable's modules
+registerAllModules();
 
 function App() {
   const [trackingNumbers, setTrackingNumbers] = useState("");
@@ -9,6 +15,7 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [progress, setProgress] = useState(0);
   const [searchTime, setSearchTime] = useState(null);
+  const hotRef = useRef(null); // Ref for Handsontable instance
 
   const handleTrack = async () => {
     setError(null);
@@ -39,30 +46,20 @@ function App() {
             number: numbersArray[i],
             data: packageData || null,
           };
-  
-          // Push the individual result into the results array
           results.push(result);
-          
-          // Update state with current results incrementally
           setTrackingData(prev => [...prev, result]);
-  
         } catch (error) {
           console.error(`Error fetching data for ${numbersArray[i]}`, error);
           const result = {
             number: numbersArray[i],
             data: null,
           };
-          
-          // Push the error result and update state
           results.push(result);
           setTrackingData(prev => [...prev, result]);
         }
   
-        // Update progress after each request
         setProgress(((i + 1) / totalNumbers) * 100);
-  
-        // Optional: Small delay between requests
-        await new Promise(resolve => setTimeout(resolve, 200));
+        await new Promise(resolve => setTimeout(resolve, 100));
       }
     } catch (error) {
       console.error("Error fetching tracking data", error);
@@ -74,8 +71,6 @@ function App() {
       setLoading(false);
     }
   };
-  
-  
 
   return (
     <div className="App">
@@ -104,48 +99,66 @@ function App() {
       {searchTime && <p>Total search time: {searchTime} seconds</p>}
 
       {trackingData.length > 0 && (
-        <table>
-          <thead>
-            <tr>
-              
-              <th>Tracking Number</th>
-              
-<th>Status</th>
-<th>Delivery Date</th>
-<th>Last Scan</th>
-<th>Time</th>
-<th>Signed</th>
-<th>Postal</th>
-<th>City</th>
-<th>Country</th>
-<th>SL</th>
-<th>Weight</th>
-<th>Origin Country</th>
-<th>Origin </th>
-<th>PKG Count</th>
-            </tr>
-          </thead>
-          <tbody>
-            {trackingData.map((tracking, index) => (
-              <tr key={index}>
-                <td>{tracking.number}</td>
-                <td>{tracking.data?.currentStatus?.description || "N/A"}</td>
-                <td>{tracking.data?.deliveryDate?.[0]?.date || "N/A"}</td>
-                <td>{tracking.data?.activity?.[0]?.status?.description || "No recent activity"}</td>
-                <td>{tracking.data?.activity?.[0]?.time || "N/A"}</td>
-                <td>{tracking.data?.activity?.[0]?.time || "N/A"}</td>
-                <td>{tracking.data?.activity?.[0]?.location?.slic  || "N/A"}</td>
-                <td>{tracking.data?.activity?.[0]?.location?.address?.city || "N/A"}</td>
-                <td>{tracking.data?.activity?.[0]?.location?.address?.countryCode || "N/A"}</td>
-                <td>{tracking.data?.service.description || "N/A"}</td>
-                <td>{tracking.data?.weight.weight || "N/A"}</td>
-                <td>{tracking.data?.activity?.[7]?.location?.address?.countryCode || "N/A"}</td>
-                <td>{tracking.data?.activity?.[7]?.location?.address?.city || "N/A"}</td>
-                <td>{tracking.data?.packageCount || "N/A"}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <HotTable
+          ref={hotRef}
+          data={trackingData.map(tracking => {
+            // Extract dimensions
+            const height = tracking.data?.dimension?.height || 0; // Use 0 if height is not available
+            const length = tracking.data?.dimension?.length || 0; // Use 0 if length is not available
+            const width = tracking.data?.dimension?.width || 0; // Use 0 if width is not available
+
+            // Calculate dimensional weight
+            const dimWeight = (length * width * height) / 5000;
+
+            return [
+              tracking.number,
+              tracking.data?.currentStatus?.description || "N/A",
+              tracking.data?.deliveryDate?.[0]?.date || "N/A",
+              tracking.data?.activity?.[0]?.status?.description || "No recent activity",
+              tracking.data?.activity?.[0]?.time || "N/A",
+              tracking.data?.deliveryInformation?.receivedBy || "N/A",
+              tracking.data?.activity?.[0]?.location?.slic || "N/A",
+              tracking.data?.packageAddress?.[1]?.address?.city || "N/A",
+              tracking.data?.packageAddress?.[1]?.address?.countryCode || "N/A",
+              tracking.data?.deliveryInformation?.location || "N/A",
+              tracking.data?.service?.description || "N/A",
+              tracking.data?.weight?.weight || "N/A",
+              tracking.data?.packageAddress?.[0]?.address?.countryCode || "N/A",
+              tracking.data?.packageAddress?.[0]?.address?.city || "N/A",
+              tracking.data?.packageCount || "N/A",
+              tracking.data?.referenceNumber?.[0]?.number || "N/A",
+              dimWeight ? dimWeight.toFixed(2) : "N/A", // Include Dim Weight
+            ];
+          })}
+          width="auto"
+          height="auto"
+          colWidths={100}
+          rowHeights={23}
+          rowHeaders={true}
+          colHeaders={[
+            "Tracking Number",
+            "Status",
+            "Delivery Date",
+            "Last Scan",
+            "Time",
+            "Signed",
+            "Slic",
+            "Destination City",
+            "Destination Country",
+            "Delivery Type",
+            "Service",
+            "Weight",
+            "Origin Country",
+            "Origin City",
+            "Package Count",
+            "Shipper Number",
+            "Dim Weight", // Add header for Dim Weight
+          ]}
+          selectionMode="multiple" // 'single', 'range' or 'multiple',
+          autoWrapRow={true}
+          autoWrapCol={true}
+          licenseKey="non-commercial-and-evaluation"
+        />
       )}
 
       {!loading && trackingData.length === 0 && <p>No tracking data available. Enter tracking numbers above.</p>}
