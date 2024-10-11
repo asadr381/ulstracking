@@ -17,6 +17,11 @@ function App() {
   const [searchTime, setSearchTime] = useState(null);
   const hotRef = useRef(null); // Ref for Handsontable instance
 
+  // Dynamically set the API URL based on the environment
+  const apiBaseUrl = process.env.NODE_ENV === 'development'
+    ? '/track' // Proxy will handle this in development
+    : 'https://excel-api-0x2r.onrender.com/track'; // Full URL for production
+
   const handleTrack = async () => {
     setError(null);
     setLoading(true);
@@ -40,7 +45,7 @@ function App() {
 
       for (let i = 0; i < totalNumbers; i++) {
         try {
-          const response = await axios.get(`/track/${numbersArray[i]}`);
+          const response = await axios.get(${apiBaseUrl}/${numbersArray[i]});
           const packageData = response.data.trackResponse?.shipment[0]?.package[0];
           const result = {
             number: numbersArray[i],
@@ -49,7 +54,7 @@ function App() {
           results.push(result);
           setTrackingData(prev => [...prev, result]);
         } catch (error) {
-          console.error(`Error fetching data for ${numbersArray[i]}`, error);
+          console.error(Error fetching data for ${numbersArray[i]}, error);
           const result = {
             number: numbersArray[i],
             data: null,
@@ -90,7 +95,7 @@ function App() {
 
       {loading && (
         <div className="progress-container">
-          <div className="progress-bar" style={{ width: `${progress}%` }}></div>
+          <div className="progress-bar" style={{ width: ${progress}% }}></div>
         </div>
       )}
 
@@ -102,12 +107,9 @@ function App() {
         <HotTable
           ref={hotRef}
           data={trackingData.map(tracking => {
-            // Extract dimensions
-            const height = tracking.data?.dimension?.height || 0; // Use 0 if height is not available
-            const length = tracking.data?.dimension?.length || 0; // Use 0 if length is not available
-            const width = tracking.data?.dimension?.width || 0; // Use 0 if width is not available
-
-            // Calculate dimensional weight
+            const height = tracking.data?.dimension?.height || 0;
+            const length = tracking.data?.dimension?.length || 0;
+            const width = tracking.data?.dimension?.width || 0;
             const dimWeight = (length * width * height) / 5000;
 
             return [
@@ -117,7 +119,6 @@ function App() {
               tracking.data?.activity?.[0]?.status?.description || "No recent activity",
               tracking.data?.activity?.[0]?.time || "N/A",
               tracking.data?.deliveryInformation?.receivedBy || "N/A",
-             
               tracking.data?.packageAddress?.[1]?.address?.countryCode || "N/A",
               tracking.data?.packageAddress?.[1]?.address?.city || "N/A",
               tracking.data?.activity?.[0]?.location?.slic || "N/A",
@@ -131,7 +132,7 @@ function App() {
               tracking.data?.dimension?.height || "N/A",
               tracking.data?.dimension?.length || "N/A",
               tracking.data?.dimension?.width|| "N/A",
-              dimWeight ? dimWeight.toFixed(2) : "N/A", // Include Dim Weight
+              dimWeight ? dimWeight.toFixed(2) : "N/A",
             ];
           })}
           width="auto"
@@ -159,11 +160,11 @@ function App() {
             "Width",
             "Height",
             "Length",
-            "Label Dim Weight" // Add header for Dim Weight
+            "Label Dim Weight"
           ]}
-          filters={true} // Enable filtering
-          dropdownMenu={true} // Enable dropdown menu for filtering options
-          selectionMode="multiple" // 'single', 'range' or 'multiple',
+          filters={true}
+          dropdownMenu={true}
+          selectionMode="multiple"
           autoWrapRow={true}
           autoWrapCol={true}
           licenseKey="non-commercial-and-evaluation"
