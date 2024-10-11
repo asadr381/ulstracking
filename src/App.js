@@ -23,21 +23,21 @@ function App() {
     setTrackingData([]);
     setProgress(0);
     setSearchTime(null);
-  
+
     const numbersArray = trackingNumbers.split(/\n|,/).map(num => num.trim()).filter(num => num !== "");
-  
+
     if (numbersArray.length === 0) {
       setError("Please enter at least one tracking number.");
       setLoading(false);
       return;
     }
-  
+
     const startTime = Date.now();
     const totalNumbers = numbersArray.length;
-  
+
     try {
       const results = [];
-  
+
       for (let i = 0; i < totalNumbers; i++) {
         try {
           const response = await axios.get(`/track/${numbersArray[i]}`);
@@ -57,7 +57,7 @@ function App() {
           results.push(result);
           setTrackingData(prev => [...prev, result]);
         }
-  
+
         setProgress(((i + 1) / totalNumbers) * 100);
         await new Promise(resolve => setTimeout(resolve, 100));
       }
@@ -75,7 +75,7 @@ function App() {
   return (
     <div className="App">
       <h1>Shipment Tracker</h1>
-      
+
       <textarea
         rows="10"
         cols="50"
@@ -117,9 +117,10 @@ function App() {
               tracking.data?.activity?.[0]?.status?.description || "No recent activity",
               tracking.data?.activity?.[0]?.time || "N/A",
               tracking.data?.deliveryInformation?.receivedBy || "N/A",
-              tracking.data?.activity?.[0]?.location?.slic || "N/A",
-              tracking.data?.packageAddress?.[1]?.address?.city || "N/A",
+             
               tracking.data?.packageAddress?.[1]?.address?.countryCode || "N/A",
+              tracking.data?.packageAddress?.[1]?.address?.city || "N/A",
+              tracking.data?.activity?.[0]?.location?.slic || "N/A",
               tracking.data?.deliveryInformation?.location || "N/A",
               tracking.data?.service?.description || "N/A",
               tracking.data?.weight?.weight || "N/A",
@@ -127,6 +128,9 @@ function App() {
               tracking.data?.packageAddress?.[0]?.address?.city || "N/A",
               tracking.data?.packageCount || "N/A",
               tracking.data?.referenceNumber?.[0]?.number || "N/A",
+              tracking.data?.dimension?.height || "N/A",
+              tracking.data?.dimension?.length || "N/A",
+              tracking.data?.dimension?.width|| "N/A",
               dimWeight ? dimWeight.toFixed(2) : "N/A", // Include Dim Weight
             ];
           })}
@@ -141,19 +145,24 @@ function App() {
             "Delivery Date",
             "Last Scan",
             "Time",
-            "Signed",
-            "Slic",
-            "Destination City",
+            "Signed By",
             "Destination Country",
+            "Destination City",
+            "Slic",
             "Delivery Type",
             "Service",
-            "Weight",
+            "Label Actual Weight",
             "Origin Country",
             "Origin City",
             "Package Count",
             "Shipper Number",
-            "Dim Weight", // Add header for Dim Weight
+            "Width",
+            "Height",
+            "Length",
+            "Label Dim Weight" // Add header for Dim Weight
           ]}
+          filters={true} // Enable filtering
+          dropdownMenu={true} // Enable dropdown menu for filtering options
           selectionMode="multiple" // 'single', 'range' or 'multiple',
           autoWrapRow={true}
           autoWrapCol={true}
