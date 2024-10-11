@@ -54,7 +54,7 @@ function App() {
           results.push(result);
           setTrackingData(prev => [...prev, result]);
         } catch (error) {
-          console.error(Error fetching data for ${numbersArray[i]}, error);
+          console.error(Error fetching data for '${numbersArray[i]}', error);
           const result = {
             number: numbersArray[i],
             data: null,
