@@ -17,11 +17,6 @@ function App() {
   const [searchTime, setSearchTime] = useState(null);
   const hotRef = useRef(null); // Ref for Handsontable instance
 
-  // Dynamically set the API URL based on the environment
-  const apiBaseUrl = process.env.NODE_ENV === 'development'
-    ? '/track' // Proxy will handle this in development
-    : 'https://excel-api-0x2r.onrender.com/track'; // Full URL for production
-
   const handleTrack = async () => {
     setError(null);
     setLoading(true);
@@ -29,7 +24,10 @@ function App() {
     setProgress(0);
     setSearchTime(null);
 
-    const numbersArray = trackingNumbers.split(/\n|,/).map(num => num.trim()).filter(num => num !== "");
+    const numbersArray = trackingNumbers
+      .split(/\n|,/)
+      .map((num) => num.trim())
+      .filter((num) => num !== "");
 
     if (numbersArray.length === 0) {
       setError("Please enter at least one tracking number.");
@@ -45,26 +43,26 @@ function App() {
 
       for (let i = 0; i < totalNumbers; i++) {
         try {
-          const response = await axios.get('${apiBaseUrl}/${numbersArray[i]}');
-          const packageData = response.data.trackResponse?.shipment[0]?.package[0];
+          const response = await axios.get(/track/${numbersArray[i]});
+          const packageData = response.data.trackResponse?.shipment?.[0]?.package?.[0];
           const result = {
             number: numbersArray[i],
             data: packageData || null,
           };
           results.push(result);
-          setTrackingData(prev => [...prev, result]);
+          setTrackingData((prev) => [...prev, result]);
         } catch (error) {
-          console.error(Error fetching data for '${numbersArray[i]}', error);
+          console.error(Error fetching data for ${numbersArray[i]}, error);
           const result = {
             number: numbersArray[i],
             data: null,
           };
           results.push(result);
-          setTrackingData(prev => [...prev, result]);
+          setTrackingData((prev) => [...prev, result]);
         }
 
         setProgress(((i + 1) / totalNumbers) * 100);
-        await new Promise(resolve => setTimeout(resolve, 100));
+        await new Promise((resolve) => setTimeout(resolve, 100));
       }
     } catch (error) {
       console.error("Error fetching tracking data", error);
@@ -99,14 +97,14 @@ function App() {
         </div>
       )}
 
-      {error && <p style={{ color: 'red' }}>{error}</p>}
+      {error && <p style={{ color: "red" }}>{error}</p>}
 
       {searchTime && <p>Total search time: {searchTime} seconds</p>}
 
       {trackingData.length > 0 && (
         <HotTable
           ref={hotRef}
-          data={trackingData.map(tracking => {
+          data={trackingData.map((tracking) => {
             const height = tracking.data?.dimension?.height || 0;
             const length = tracking.data?.dimension?.length || 0;
             const width = tracking.data?.dimension?.width || 0;
@@ -129,9 +127,9 @@ function App() {
               tracking.data?.packageAddress?.[0]?.address?.city || "N/A",
               tracking.data?.packageCount || "N/A",
               tracking.data?.referenceNumber?.[0]?.number || "N/A",
-              tracking.data?.dimension?.height || "N/A",
-              tracking.data?.dimension?.length || "N/A",
-              tracking.data?.dimension?.width|| "N/A",
+              height || "N/A",
+              length || "N/A",
+              width || "N/A",
               dimWeight ? dimWeight.toFixed(2) : "N/A",
             ];
           })}
@@ -157,10 +155,10 @@ function App() {
             "Origin City",
             "Package Count",
             "Shipper Number",
-            "Width",
             "Height",
             "Length",
-            "Label Dim Weight"
+            "Width",
+            "Label Dim Weight",
           ]}
           filters={true}
           dropdownMenu={true}
