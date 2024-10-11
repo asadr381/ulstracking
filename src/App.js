@@ -45,7 +45,7 @@ function App() {
 
       for (let i = 0; i < totalNumbers; i++) {
         try {
-          const response = await axios.get(${apiBaseUrl}/${numbersArray[i]});
+          const response = await axios.get('${apiBaseUrl}/${numbersArray[i]}');
           const packageData = response.data.trackResponse?.shipment[0]?.package[0];
           const result = {
             number: numbersArray[i],
