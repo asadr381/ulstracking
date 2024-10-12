@@ -45,7 +45,12 @@ function App() {
 
       for (let i = 0; i < totalNumbers; i++) {
         try {
-          const response = await axios.get(`${apiBaseUrl}/${numbersArray[i]}`);
+          const response = await axios.get(`${apiBaseUrl}/${numbersArray[i]}`, {
+            headers: {
+              'Access-Control-Allow-Origin': '*', // Allow all origins (can be restricted for security)
+              'Content-Type': 'application/json',
+            },
+          });
           const packageData = response.data.trackResponse?.shipment[0]?.package[0];
           const result = {
             number: numbersArray[i],
@@ -76,7 +81,6 @@ function App() {
       setLoading(false);
     }
   };
-
 
   return (
     <div className="App">
@@ -132,7 +136,7 @@ function App() {
               tracking.data?.referenceNumber?.[0]?.number || "N/A",
               tracking.data?.dimension?.height || "N/A",
               tracking.data?.dimension?.length || "N/A",
-              tracking.data?.dimension?.width|| "N/A",
+              tracking.data?.dimension?.width || "N/A",
               dimWeight ? dimWeight.toFixed(2) : "N/A",
             ];
           })}
