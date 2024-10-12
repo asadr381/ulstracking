@@ -76,12 +76,7 @@ function App() {
       setLoading(false);
     }
   };
-  try {
-    const response = await axios.get(`https://excel-api-0x2r.onrender.com/track/${trackingNumber}`);
-    console.log(response.data);
-} catch (error) {
-    console.error("Error fetching data:", error);
-}
+
 
   return (
     <div className="App">
