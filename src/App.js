@@ -69,7 +69,7 @@ function App() {
         }
 
         setProgress(((i + 1) / totalNumbers) * 100);
-        await new Promise(resolve => setTimeout(resolve, 100));
+        await new Promise(resolve => setTimeout(resolve, 1));
       }
     } catch (error) {
       console.error("Error fetching tracking data", error);
@@ -77,7 +77,7 @@ function App() {
     } finally {
       const endTime = Date.now();
       const totalTime = (endTime - startTime) / 1000;
-      setSearchTime(totalTime.toFixed(2));
+      setSearchTime(totalTime.toFixed(0));
       setLoading(false);
     }
   };
@@ -122,7 +122,10 @@ function App() {
               tracking.data?.currentStatus?.description || "N/A",
               tracking.data?.deliveryDate?.[0]?.date || "N/A",
               tracking.data?.activity?.[0]?.status?.description || "No recent activity",
+              tracking.data?.activity?.[0]?.location?.address.countryCode || "No recent activity",
+
               tracking.data?.activity?.[0]?.time || "N/A",
+              tracking.data?.activity?.[0]?.date || "N/A",
               tracking.data?.deliveryInformation?.receivedBy || "N/A",
               tracking.data?.packageAddress?.[1]?.address?.countryCode || "N/A",
               tracking.data?.packageAddress?.[1]?.address?.city || "N/A",
@@ -150,7 +153,9 @@ function App() {
             "Status",
             "Delivery Date",
             "Last Scan",
+            "Last Scan Country",
             "Time",
+            "Date",
             "Signed By",
             "Destination Country",
             "Destination City",
