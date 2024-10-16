@@ -116,16 +116,23 @@ function App() {
             const length = tracking.data?.dimension?.length || 0;
             const width = tracking.data?.dimension?.width || 0;
             const dimWeight = (length * width * height) / 5000;
+            const referenceNumber = tracking.data?.referenceNumber?.[0]?.number || "N/A";
+            const firstSixDigits = referenceNumber.slice(0, 6);
 
             return [
               tracking.number,
+              firstSixDigits, 
               tracking.data?.currentStatus?.description || "N/A",
-              tracking.data?.deliveryDate?.[0]?.date || "N/A",
+              tracking.data?.deliveryDate?.[0]?.date? `${tracking.data.deliveryDate[0].date.slice(0, 4)}-${tracking.data.deliveryDate[0].date.slice(4, 6)}-${tracking.data.deliveryDate[0].date.slice(6, 8)}`: "N/A",
+
               tracking.data?.activity?.[0]?.status?.description || "No recent activity",
               tracking.data?.activity?.[0]?.location?.address.countryCode || "No recent activity",
 
-              tracking.data?.activity?.[0]?.time || "N/A",
-              tracking.data?.activity?.[0]?.date || "N/A",
+              tracking.data?.activity?.[0]?.time 
+  ? `${tracking.data.activity[0].time.slice(0, 2)}:${tracking.data.activity[0].time.slice(2, 4)}:${tracking.data.activity[0].time.slice(4, 6)}` 
+  : "N/A",
+  tracking.data?.activity?.[0]?.date? `${tracking.data.deliveryDate[0].date.slice(0, 4)}-${tracking.data.deliveryDate[0].date.slice(4, 6)}-${tracking.data.deliveryDate[0].date.slice(6, 8)}`: "N/A",
+             
               tracking.data?.deliveryInformation?.receivedBy || "N/A",
               tracking.data?.packageAddress?.[1]?.address?.countryCode || "N/A",
               tracking.data?.packageAddress?.[1]?.address?.city || "N/A",
@@ -141,15 +148,17 @@ function App() {
               tracking.data?.dimension?.length || "N/A",
               tracking.data?.dimension?.width || "N/A",
               dimWeight ? dimWeight.toFixed(2) : "N/A",
+              
             ];
           })}
           width="auto"
           height="auto"
-          colWidths={100}
+          colWidths={200}
           rowHeights={23}
           rowHeaders={true}
           colHeaders={[
             "Tracking Number",
+            "ICIRS Number",
             "Status",
             "Delivery Date",
             "Last Scan",
@@ -173,6 +182,7 @@ function App() {
             "Label Dim Weight"
           ]}
           filters={true}
+          
           dropdownMenu={true}
           selectionMode="multiple"
           autoWrapRow={true}
