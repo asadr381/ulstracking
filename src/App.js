@@ -5,8 +5,8 @@ import { registerAllModules } from "handsontable/registry";
 import Handsontable from "handsontable"; // Import Handsontable
 import "handsontable/dist/handsontable.full.min.css";
 import './App.css';
-import { useNavigate } from 'react-router-dom';
-
+import { useNavigate, Routes, Route } from 'react-router-dom';
+import ShipmentDetails from './shipment-details';
 
 // Register Handsontable's modules
 registerAllModules();
@@ -21,6 +21,7 @@ function App() {
   const hotRef = useRef(null); // Ref for Handsontable instance
   const abortControllerRef = useRef(null); // Ref to manage abort controller
   const navigate = useNavigate();
+  
   // Dynamically set the API URL based on the environment
   const apiBaseUrl = process.env.NODE_ENV === 'development'
     ? '/track' // Proxy will handle this in development
@@ -233,68 +234,24 @@ function App() {
             "Width",
             "Height",
             "Length",
-            "Label Dim Weight",
-            "Actions"
+            "Dimensional Weight"
           ]}
-          filters={true}
+          columns={[
+            {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, 
+            { renderer: buttonRenderer } // Add custom button renderer here
+          ]}
+          columnSorting={true}
           dropdownMenu={true}
-          selectionMode="multiple"
-          autoWrapRow={true}
-          autoWrapCol={true}
+          filters={true}
           manualColumnResize={true}
           manualRowResize={true}
-          licenseKey="non-commercial-and-evaluation"
-          columns={[
-            {},
-            {}, // ICIRS Number
-            {}, // Status
-            {}, // Delivery Date
-            {}, // Last Scan
-            {}, // Last Scan Country
-            {}, // Time
-            {}, // Date
-            {}, // Signed By
-            {}, // Destination Country
-            {}, // Destination City
-            {}, // Slic
-            {}, // Delivery Type
-            {}, // Service
-            {}, // Label Actual Weight
-            {}, // Origin Country
-            {}, // Origin City
-            {}, // Package Count
-            {}, // Shipper Number
-            {}, // Width
-            {}, // Height
-            {}, // Length
-            { renderer: buttonRenderer }, // Apply custom renderer to the button column
-          ]}
-          beforeCopy={(data, coords) => {
-            const hotInstance = hotRef.current.hotInstance;
-            const totalRows = hotInstance.countRows();
-        
-            // Check if the selection covers entire columns
-            const isFullColumnSelection = coords.every(range =>
-              range.startRow === 0 && range.endRow === totalRows - 1
-            );
-        
-            if (isFullColumnSelection) {
-              // Determine the columns that are selected
-              const startCol = coords[0].startCol;
-              const endCol = coords[0].endCol;
-        
-              // Get the headers of the selected columns
-              const headers = [];
-              for (let col = startCol; col <= endCol; col++) {
-                headers.push(hotInstance.getColHeader(col));
-              }
-        
-              // Add headers as the first row in the copied data
-              data.unshift(headers);
-            }
-          }}
+          licenseKey="non-commercial-and-evaluation" // Replace with your Handsontable license key if needed
         />
       )}
+
+      <Routes>
+        <Route path="/shipment-details" element={<ShipmentDetails />} />
+      </Routes>
     </div>
   );
 }
