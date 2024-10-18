@@ -100,7 +100,7 @@ function App() {
 
   const handleViewDetails = () => {
 
-  window.open(`https://tracking.ulspk.com/shipment-details?trackingNumber=${trackingNumber}`, '_blank');
+  window.open(`/shipment-details?trackingNumber=${trackingNumber}`, '_blank');
   };
 
   // Custom renderer for the button
