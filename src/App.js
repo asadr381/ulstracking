@@ -246,6 +246,30 @@ function App() {
           manualColumnResize={true}
           manualRowResize={true}
           licenseKey="non-commercial-and-evaluation" // Replace with your Handsontable license key if needed
+             beforeCopy={(data, coords) => {
+            const hotInstance = hotRef.current.hotInstance;
+            const totalRows = hotInstance.countRows();
+        
+            // Check if the selection covers entire columns
+            const isFullColumnSelection = coords.every(range =>
+              range.startRow === 0 && range.endRow === totalRows - 1
+            );
+        
+            if (isFullColumnSelection) {
+              // Determine the columns that are selected
+              const startCol = coords[0].startCol;
+              const endCol = coords[0].endCol;
+        
+              // Get the headers of the selected columns
+              const headers = [];
+              for (let col = startCol; col <= endCol; col++) {
+                headers.push(hotInstance.getColHeader(col));
+              }
+        
+              // Add headers as the first row in the copied data
+              data.unshift(headers);
+            }
+          }}
         />
       )}
 
