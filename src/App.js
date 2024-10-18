@@ -99,7 +99,7 @@ function App() {
   };
 
   const handleViewDetails = (trackingNumber) => {
-    window.open(`/shipment-details?trackingNumber=${trackingNumber}`, '_blank');
+ navigate(`/shipment-details/${trackingNumber}`);
   };
 
   // Custom renderer for the button
