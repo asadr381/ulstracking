@@ -5,6 +5,7 @@ import { registerAllModules } from "handsontable/registry";
 import Handsontable from "handsontable"; // Import Handsontable
 import "handsontable/dist/handsontable.full.min.css";
 import './App.css';
+import { useNavigate } from 'react-router-dom';
 
 
 // Register Handsontable's modules
@@ -19,7 +20,7 @@ function App() {
   const [searchTime, setSearchTime] = useState(null);
   const hotRef = useRef(null); // Ref for Handsontable instance
   const abortControllerRef = useRef(null); // Ref to manage abort controller
-
+  const navigate = useNavigate();
   // Dynamically set the API URL based on the environment
   const apiBaseUrl = process.env.NODE_ENV === 'development'
     ? '/track' // Proxy will handle this in development
@@ -100,7 +101,7 @@ function App() {
   };
 
   const handleViewDetails = (trackingNumber) => {
-    window.open(`/shipment-details?trackingNumber=${trackingNumber}`, '_blank');
+    navigate(`/shipment-details?trackingNumber=${trackingNumber}`);
   };
 
   // Custom renderer for the button
