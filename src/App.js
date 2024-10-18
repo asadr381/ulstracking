@@ -2,6 +2,7 @@ import React, { useState, useRef } from "react";
 import axios from "axios";
 import { HotTable } from "@handsontable/react";
 import { registerAllModules } from "handsontable/registry";
+import Handsontable from "handsontable"; // Import Handsontable
 import "handsontable/dist/handsontable.full.min.css";
 import './App.css';
 
@@ -50,7 +51,7 @@ function App() {
         try {
           const response = await axios.get(`${apiBaseUrl}/${numbersArray[i]}`, {
             headers: {
-              'Access-Control-Allow-Origin': '*', // Allow all origins (can be restricted for security)
+              'Access-Control-Allow-Origin': '*',
               'Content-Type': 'application/json',
             },
             signal: abortControllerRef.current.signal, // Pass the abort signal
@@ -97,6 +98,22 @@ function App() {
     }
   };
 
+  const handleViewDetails = (trackingNumber) => {
+    window.open(`/shipment-details?trackingNumber=${trackingNumber}`, '_blank');
+  };
+
+  // Custom renderer for the button
+  const buttonRenderer = (hotInstance, td, row, col, prop, value, cellProperties) => {
+    Handsontable.dom.empty(td);
+    const button = document.createElement('button');
+    button.innerText = "View Details";
+    button.style.marginLeft = '10px';
+    button.style.padding = '5px 10px';
+    button.style.fontSize = '0.9em';
+    button.onclick = () => handleViewDetails(trackingData[row].number);
+    td.appendChild(button);
+  };
+
   return (
     <div className="App">
       <h1>Shipment Tracker</h1>
@@ -114,20 +131,19 @@ function App() {
       </button>
 
       <button
-  onClick={handleStop}
-  disabled={!loading}
-  style={{
-    backgroundColor: "red",
-    color: "white",
-    padding: "10px 20px",
-    border: "none",
-  
-    cursor: loading ? "pointer" : "not-allowed",
-    opacity: loading ? 1 : 0.5, // Dim the button when disabled
-  }}
->
-  Stop Tracking
-</button>
+        onClick={handleStop}
+        disabled={!loading}
+        style={{
+          backgroundColor: "red",
+          color: "white",
+          padding: "10px 20px",
+          border: "none",
+          cursor: loading ? "pointer" : "not-allowed",
+          opacity: loading ? 1 : 0.5, // Dim the button when disabled
+        }}
+      >
+        Stop Tracking
+      </button>
 
       {loading && (
         <div className="progress-container">
@@ -149,18 +165,15 @@ function App() {
             const dimWeight = (length * width * height) / 5000;
             const referenceNumber = tracking.data?.referenceNumber?.[0]?.number || "N/A";
             const firstSixDigits = referenceNumber.slice(0, 6);
-
             const deliveryDate = tracking.data?.deliveryDate?.[0]?.date;
             const formattedDeliveryDate = deliveryDate 
               ? `${deliveryDate.slice(0, 4)}-${deliveryDate.slice(4, 6)}-${deliveryDate.slice(6, 8)}`
               : "N/A";
-
             const lastScanActivity = tracking.data?.activity?.[0] || {};
             const lastScanDate = lastScanActivity.date;
             const formattedLastScanDate = lastScanDate 
               ? `${lastScanDate.slice(0, 4)}-${lastScanDate.slice(4, 6)}-${lastScanDate.slice(6, 8)}`
               : "N/A";
-
             const lastScanTime = lastScanActivity.time;
             const formattedLastScanTime = lastScanTime
               ? `${lastScanTime.slice(0, 2)}:${lastScanTime.slice(2, 4)}:${lastScanTime.slice(4, 6)}`
@@ -218,7 +231,8 @@ function App() {
             "Width",
             "Height",
             "Length",
-            "Label Dim Weight"
+            "Label Dim Weight",
+            "Actions"
           ]}
           filters={true}
           dropdownMenu={true}
@@ -228,6 +242,31 @@ function App() {
           manualColumnResize={true}
           manualRowResize={true}
           licenseKey="non-commercial-and-evaluation"
+          columns={[
+            {},
+            {}, // ICIRS Number
+            {}, // Status
+            {}, // Delivery Date
+            {}, // Last Scan
+            {}, // Last Scan Country
+            {}, // Time
+            {}, // Date
+            {}, // Signed By
+            {}, // Destination Country
+            {}, // Destination City
+            {}, // Slic
+            {}, // Delivery Type
+            {}, // Service
+            {}, // Label Actual Weight
+            {}, // Origin Country
+            {}, // Origin City
+            {}, // Package Count
+            {}, // Shipper Number
+            {}, // Width
+            {}, // Height
+            {}, // Length
+            { renderer: buttonRenderer }, // Apply custom renderer to the button column
+          ]}
           beforeCopy={(data, coords) => {
             const hotInstance = hotRef.current.hotInstance;
             const totalRows = hotInstance.countRows();
@@ -254,8 +293,6 @@ function App() {
           }}
         />
       )}
-
-      {!loading && trackingData.length === 0 && <p>No tracking data available. Enter tracking numbers above.</p>}
     </div>
   );
 }
