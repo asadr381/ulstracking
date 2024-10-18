@@ -5,7 +5,7 @@ import { registerAllModules } from "handsontable/registry";
 import Handsontable from "handsontable"; // Import Handsontable
 import "handsontable/dist/handsontable.full.min.css";
 import './App.css';
-import {  useNavigate, Routes, Route } from 'react-router-dom';
+import { useNavigate, Routes, Route } from 'react-router-dom';
 import ShipmentDetails from './shipment-details';
 
 // Register Handsontable's modules
@@ -20,8 +20,7 @@ function App() {
   const [searchTime, setSearchTime] = useState(null);
   const hotRef = useRef(null); // Ref for Handsontable instance
   const abortControllerRef = useRef(null); // Ref to manage abort controller
-    const navigate = useNavigate();
-
+  const navigate = useNavigate();
   
   // Dynamically set the API URL based on the environment
   const apiBaseUrl = process.env.NODE_ENV === 'development'
@@ -160,94 +159,97 @@ function App() {
       {searchTime && <p>Total search time: {searchTime} seconds</p>}
 
       {trackingData.length > 0 && (
-        <HotTable
-          ref={hotRef}
-          data={trackingData.map(tracking => {
-            const height = tracking.data?.dimension?.height || 0;
-            const length = tracking.data?.dimension?.length || 0;
-            const width = tracking.data?.dimension?.width || 0;
-            const dimWeight = (length * width * height) / 5000;
-            const referenceNumber = tracking.data?.referenceNumber?.[0]?.number || "N/A";
-            const firstSixDigits = referenceNumber.slice(0, 6);
-            const deliveryDate = tracking.data?.deliveryDate?.[0]?.date;
-            const formattedDeliveryDate = deliveryDate 
-              ? `${deliveryDate.slice(0, 4)}-${deliveryDate.slice(4, 6)}-${deliveryDate.slice(6, 8)}`
-              : "N/A";
-            const lastScanActivity = tracking.data?.activity?.[0] || {};
-            const lastScanDate = lastScanActivity.date;
-            const formattedLastScanDate = lastScanDate 
-              ? `${lastScanDate.slice(0, 4)}-${lastScanDate.slice(4, 6)}-${lastScanDate.slice(6, 8)}`
-              : "N/A";
-            const lastScanTime = lastScanActivity.time;
-            const formattedLastScanTime = lastScanTime
-              ? `${lastScanTime.slice(0, 2)}:${lastScanTime.slice(2, 4)}:${lastScanTime.slice(4, 6)}`
-              : "N/A";
-
-            return [
-              tracking.number,
-              firstSixDigits, 
-              tracking.data?.currentStatus?.description || "N/A",
-              formattedDeliveryDate,
-              lastScanActivity.status?.description || "No recent activity",
-              lastScanActivity.location?.address?.countryCode || "No recent activity",
-              formattedLastScanTime,
-              formattedLastScanDate,
-              tracking.data?.deliveryInformation?.receivedBy || "N/A",
-              tracking.data?.packageAddress?.[1]?.address?.countryCode || "N/A",
-              tracking.data?.packageAddress?.[1]?.address?.city || "N/A",
-              lastScanActivity.location?.slic || "N/A",
-              tracking.data?.deliveryInformation?.location || "N/A",
-              tracking.data?.service?.description || "N/A",
-              tracking.data?.weight?.weight || "N/A",
-              tracking.data?.packageAddress?.[0]?.address?.countryCode || "N/A",
-              tracking.data?.packageAddress?.[0]?.address?.city || "N/A",
-              tracking.data?.packageCount || "N/A",
-              tracking.data?.referenceNumber?.[0]?.number || "N/A",
-              tracking.data?.dimension?.height || "N/A",
-              tracking.data?.dimension?.length || "N/A",
-              tracking.data?.dimension?.width || "N/A",
-              dimWeight ? dimWeight.toFixed(2) : "N/A",
-            ];
-          })}
-          width="auto"
-          height="auto"
-          rowHeaders={true}
-          colHeaders={[
-            "Tracking Number",
-            "ICIRS Number",
-            "Status",
-            "Delivery Date",
-            "Last Scan",
-            "Last Scan Country",
-            "Time",
-            "Date",
-            "Signed By",
-            "Destination Country",
-            "Destination City",
-            "Slic",
-            "Delivery Type",
-            "Service",
-            "Label Actual Weight",
-            "Origin Country",
-            "Origin City",
-            "Package Count",
-            "Shipper Number",
-            "Width",
-            "Height",
-            "Length",
-            "Dimensional Weight"
-          ]}
-          columns={[
-            {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, 
-            { renderer: buttonRenderer } // Add custom button renderer here
-          ]}
+       <HotTable
+       ref={hotRef}
+       data={trackingData.map(tracking => {
+         const height = tracking.data?.dimension?.height || 0;
+         const length = tracking.data?.dimension?.length || 0;
+         const width = tracking.data?.dimension?.width || 0;
+         const dimWeight = (length * width * height) / 5000;
+         const referenceNumber = tracking.data?.referenceNumber?.[0]?.number || "N/A";
+         const firstSixDigits = referenceNumber.slice(0, 6);
+         const deliveryDate = tracking.data?.deliveryDate?.[0]?.date;
+         const formattedDeliveryDate = deliveryDate 
+           ? `${deliveryDate.slice(0, 4)}-${deliveryDate.slice(4, 6)}-${deliveryDate.slice(6, 8)}`
+           : "N/A";
+         const lastScanActivity = tracking.data?.activity?.[0] || {};
+         const lastScanDate = lastScanActivity.date;
+         const formattedLastScanDate = lastScanDate 
+           ? `${lastScanDate.slice(0, 4)}-${lastScanDate.slice(4, 6)}-${lastScanDate.slice(6, 8)}`
+           : "N/A";
+         const lastScanTime = lastScanActivity.time;
+         const formattedLastScanTime = lastScanTime
+           ? `${lastScanTime.slice(0, 2)}:${lastScanTime.slice(2, 4)}:${lastScanTime.slice(4, 6)}`
+           : "N/A";
+     
+         return [
+           "", // Placeholder for the button column, handled separately
+           tracking.number, // Ensure the tracking number is explicitly included
+           firstSixDigits, 
+           tracking.data?.currentStatus?.description || "N/A",
+           formattedDeliveryDate,
+           lastScanActivity.status?.description || "No recent activity",
+           lastScanActivity.location?.address?.countryCode || "No recent activity",
+           formattedLastScanTime,
+           formattedLastScanDate,
+           tracking.data?.deliveryInformation?.receivedBy || "N/A",
+           tracking.data?.packageAddress?.[1]?.address?.countryCode || "N/A",
+           tracking.data?.packageAddress?.[1]?.address?.city || "N/A",
+           lastScanActivity.location?.slic || "N/A",
+           tracking.data?.deliveryInformation?.location || "N/A",
+           tracking.data?.service?.description || "N/A",
+           tracking.data?.weight?.weight || "N/A",
+           tracking.data?.packageAddress?.[0]?.address?.countryCode || "N/A",
+           tracking.data?.packageAddress?.[0]?.address?.city || "N/A",
+           tracking.data?.packageCount || "N/A",
+           tracking.data?.referenceNumber?.[0]?.number || "N/A",
+           tracking.data?.dimension?.height || "N/A",
+           tracking.data?.dimension?.length || "N/A",
+           tracking.data?.dimension?.width || "N/A",
+           dimWeight ? dimWeight.toFixed(2) : "N/A",
+         ];
+       })}
+       width="auto"
+       height="auto"
+       rowHeaders={true}
+       colHeaders={[
+         "View Details", // Moved to the first column
+         "Tracking Number",
+         "ICIRS Number",
+         "Status",
+         "Delivery Date",
+         "Last Scan",
+         "Last Scan Country",
+         "Time",
+         "Date",
+         "Signed By",
+         "Destination Country",
+         "Destination City",
+         "Slic",
+         "Delivery Type",
+         "Service",
+         "Label Actual Weight",
+         "Origin Country",
+         "Origin City",
+         "Package Count",
+         "Shipper Number",
+         "Width",
+         "Height",
+         "Length",
+         "Dimensional Weight"
+       ]}
+       columns={[
+         { renderer: buttonRenderer }, // Move button renderer to the first column
+         {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {},
+       ]}
           columnSorting={true}
           dropdownMenu={true}
           filters={true}
           manualColumnResize={true}
           manualRowResize={true}
           licenseKey="non-commercial-and-evaluation" // Replace with your Handsontable license key if needed
-             beforeCopy={(data, coords) => {
+          
+          beforeCopy={(data, coords) => {
             const hotInstance = hotRef.current.hotInstance;
             const totalRows = hotInstance.countRows();
         
@@ -271,6 +273,7 @@ function App() {
               data.unshift(headers);
             }
           }}
+
         />
       )}
 
