@@ -6,6 +6,7 @@ import Handsontable from "handsontable"; // Import Handsontable
 import "handsontable/dist/handsontable.full.min.css";
 import './App.css';
 
+
 // Register Handsontable's modules
 registerAllModules();
 
@@ -31,7 +32,7 @@ function App() {
     setProgress(0);
     setSearchTime(null);
 
-    const numbersArray = s.split(/\n|,/).map(num => num.trim()).filter(num => num !== "");
+    const numbersArray = trackingNumbers.split(/\n|,/).map(num => num.trim()).filter(num => num !== "");
 
     if (numbersArray.length === 0) {
       setError("Please enter at least one tracking number.");
@@ -98,9 +99,8 @@ function App() {
     }
   };
 
-  const handleViewDetails = () => {
-
-  window.open(`/shipment-details?trackingNumber=${trackingNumber}`, '_blank');
+  const handleViewDetails = (trackingNumber) => {
+    window.open(`/shipment-details?trackingNumber=${trackingNumber}`, '_blank');
   };
 
   // Custom renderer for the button
