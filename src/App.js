@@ -209,8 +209,8 @@ function App() {
            dimWeight ? dimWeight.toFixed(2) : "N/A",
          ];
        })}
-       width="auto"
-       height="auto"
+    width="100%"
+       height="500px"
        rowHeaders={true}
        colHeaders={[
          "View Details", // Moved to the first column
