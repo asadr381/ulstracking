@@ -43,15 +43,16 @@ const ShipmentDetails = () => {
             ? `${deliveryDate.slice(0, 4)}-${deliveryDate.slice(4, 6)}-${deliveryDate.slice(6, 8)}`
             : "N/A";
 
-          const formattedActivities = packageData.activity?.map(activity => {
-            return {
-              date: activity.date ? `${activity.date.slice(0, 4)}-${activity.date.slice(4, 6)}-${activity.date.slice(6, 8)}` : "N/A",
-              description: activity.status.description || "N/A",
-              city: activity.location.address.city || "N/A",
-              country: activity.location.address.country || "N/A",
-              time: activity.gmtTime || "N/A"
-            };
-          }) || [];
+            const formattedActivities = packageData.activity?.map(activity => {
+              return {
+                date: activity.date ? `${activity.date.slice(0, 4)}-${activity.date.slice(4, 6)}-${activity.date.slice(6, 8)}` : "",
+                description: activity.status.description || "",
+                city: activity.location.address.city || "",
+                country: activity.location.address.country || "",
+                time: activity.gmtTime || ""
+              };
+            }) || [];
+            
 
           const formattedLastScanDate = formattedActivities[0]?.date || "N/A";
           const formattedLastScanTime = formattedActivities[0]?.time || "N/A";
@@ -60,21 +61,21 @@ const ShipmentDetails = () => {
           setShipmentDetails({
             number: trackingNumber,
             firstSixDigits,
-            currentStatus: packageData.currentStatus?.description || "N/A",
+            currentStatus: packageData.currentStatus?.description || "",
             formattedDeliveryDate,
             formattedActivities,
             formattedLastScanDate,
             formattedLastScanTime,
             lastScanCountry,
-            receivedBy: packageData.deliveryInformation?.receivedBy || "N/A",
-            destinationCountry: packageData.packageAddress?.[1]?.address?.countryCode || "N/A",
-            destinationCity: packageData.packageAddress?.[1]?.address?.city || "N/A",
-            originCountry: packageData.packageAddress?.[0]?.address?.countryCode || "N/A",
-            originCity: packageData.packageAddress?.[0]?.address?.city || "N/A",
-            packageCount: packageData.packageCount || "N/A",
-            dimWeight: dimWeight ? dimWeight.toFixed(2) : "N/A",
-            weight: packageData.weight?.weight || "N/A",
-            service: packageData.service?.description || "N/A"
+            receivedBy: packageData.deliveryInformation?.receivedBy || "",
+            destinationCountry: packageData.packageAddress?.[1]?.address?.countryCode || "",
+            destinationCity: packageData.packageAddress?.[1]?.address?.city || "",
+            originCountry: packageData.packageAddress?.[0]?.address?.countryCode || "",
+            originCity: packageData.packageAddress?.[0]?.address?.city || "",
+            packageCount: packageData.packageCount || "",
+            dimWeight: dimWeight ? dimWeight.toFixed(2) : "",
+            weight: packageData.weight?.weight || "",
+            service: packageData.service?.description || ""
           });
         } else {
           setError("No shipment details found.");
@@ -146,7 +147,7 @@ const ShipmentDetails = () => {
         <h3>Shipment Lifecycle</h3>
         {formattedActivities.map((activity, index) => (
           <div key={index} className="timeline-item">
-            <h3>{activity.city}, {activity.country}</h3>
+            <h3>{activity.city} {activity.country}</h3>
             <p>{activity.description} on {activity.date} at {activity.time} GMT</p>
           </div>
         ))}
