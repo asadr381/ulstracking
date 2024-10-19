@@ -110,9 +110,12 @@ function App() {
     Handsontable.dom.empty(td);
     const button = document.createElement('button');
     button.innerText = "View Details";
-    button.style.marginLeft = '10px';
+    button.style.marginLeft = '1px';
     button.style.padding = '5px 10px';
     button.style.fontSize = '0.9em';
+    td.style.padding = '0';
+    td.style.verticalAlign = 'middle';
+    button.style.margin = '0 10px';
     button.onclick = () => handleViewDetails(trackingData[row].number);
     td.appendChild(button);
   };
