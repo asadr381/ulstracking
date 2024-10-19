@@ -235,7 +235,7 @@ function App() {
          "Origin Country",
          "Origin City",
          "Package Count",
-         "Shipper Number",
+         "Shipment Number",
          "Width",
          "Height",
          "Length",
