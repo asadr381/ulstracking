@@ -1,22 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+  <head>
     <meta charset="utf-8" />
-    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#000000" />
     <meta name="description" content="Web site created using create-react-app" />
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
     <title>ULS TRACKER</title>
-    
-    <!-- DataGrid XL CSS -->
+
+    <!-- Include the DataGridXL CSS and JS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/datagrid-xl@latest/dist/datagridxl.min.css">
-    <!-- DataGrid XL JS -->
     <script src="https://cdn.jsdelivr.net/npm/datagrid-xl@latest/dist/datagridxl.min.js"></script>
-</head>
-<body>
+  </head>
+  <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
+    
     <div id="root"></div>
-</body>
+    
+    <!-- This div seems unnecessary if you're only using it for React -->
+    <!-- <div id="myGrid" class="ag-theme-quartz" style="height: 100%"></div> -->
+    
+    <!-- The React app will inject its bundled scripts here -->
+  </body>
 </html>
