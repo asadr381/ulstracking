@@ -106,19 +106,20 @@ function App() {
   };
 
   // Custom renderer for the button
-  const buttonRenderer = (hotInstance, td, row, col, prop, value, cellProperties) => {
+    const buttonRenderer = (hotInstance, td, row, col, prop, value, cellProperties) => {
     Handsontable.dom.empty(td);
     const button = document.createElement('button');
     button.innerText = "View Details";
-    button.style.marginLeft = '1px';
-    button.style.padding = '5px 10px';
-    button.style.fontSize = '0.9em';
-    td.style.padding = '0';
+ // Use rem for better responsiveness
+    button.style.padding = '0.1rem 1rem'; // Use rem units for padding
+    button.style.fontSize = '1rem'; // Keep font size consistent
+    button.style.margin = '0 0.25rem'; // Adjust margins with rem
+    button.style.width = 'auto'; // Let the button size adapt
+    td.style.padding = '1'; // Ensure no extra padding around the cell
     td.style.verticalAlign = 'middle';
-    button.style.margin = '0 10px';
     button.onclick = () => handleViewDetails(trackingData[row].number);
     td.appendChild(button);
-  };
+};
 
   return (
     <div className="App">
