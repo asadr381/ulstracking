@@ -130,7 +130,7 @@ const ShipmentDetails = () => {
         <div><strong>ICIRS Number:</strong> {firstSixDigits}</div>
         <div><strong>Status:</strong> {currentStatus}</div>
         <div><strong>Delivery Date:</strong> {formattedDeliveryDate}</div>
-        <div><strong>Last Scan Date:</strong> {formattedLastScanDate} at {formattedLastScanTime}</div>
+        <div><strong>Last Scan Date:</strong> {formattedLastScanDate} at {formattedLastScanTime} GMT</div>
         <div><strong>Last Scan Country:</strong> {lastScanCountry}</div>
         <div><strong>Received By:</strong> {receivedBy}</div>
         <div><strong>Destination Country:</strong> {destinationCountry}</div>
