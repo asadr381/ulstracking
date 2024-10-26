@@ -37,6 +37,7 @@ function App() {
     });
 
     socket.on('activeUsersCount', (count) => {
+      setActiveUsers(count);
       console.log('Active users:', count);
       // Update your state or UI with the count here
     });
