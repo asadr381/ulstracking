@@ -25,21 +25,27 @@ function App() {
   const [activeUsers, setActiveUsers] = useState(0);
   
 
-
   useEffect(() => {
-    // Connect to WebSocket server
-    const socket = io("https://liveusers-xtjj.onrender.com"); // Replace with your server URL
-
-    // Listen for updates on user count
-    socket.on("userCount", (count) => {
-      setActiveUsers(count);
+    // Automatically uses wss:// for HTTPS and ws:// for HTTP
+    const socket = io('https://liveusers-xtjj.onrender.com', {
+      transports: ['websocket'],
+      withCredentials: true,
     });
 
-    // Clean up on component unmount
+    socket.on('connect', () => {
+      console.log('Connected to Socket.io server');
+    });
+
+    socket.on('activeUsersCount', (count) => {
+      console.log('Active users:', count);
+      // Update your state or UI with the count here
+    });
+
     return () => {
       socket.disconnect();
     };
   }, []);
+
   // Dynamically set the API URL based on the environment
   const apiBaseUrl = process.env.NODE_ENV === 'development'
     ? '/track' // Proxy will handle this in development
