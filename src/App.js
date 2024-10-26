@@ -142,9 +142,14 @@ function App() {
   return (
     <div className="App">
       <h1>Shipment Tracker</h1>
-      <div style={{ position: "absolute", top: "10px", right: "10px", backgroundColor: "#f0f0f0", padding: "10px", borderRadius: "5px" }}>
+    
+
+
+      <div className="active-users-container">
+        <div className="dot"></div>
         Active Users: {activeUsers}
       </div>
+
 
       <textarea
         rows="10"
