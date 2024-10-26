@@ -107,3 +107,22 @@ button:hover {
     opacity: 0.5;
   }
 }
+.upload-label {
+  display: inline-block;
+  padding: 9px 20px;
+  background-color: #4CAF50; /* Green background */
+  color: white; /* White text color */
+ /* Rounded corners */
+  cursor: pointer; /* Pointer cursor on hover */
+  text-align: center; /* Center text */
+  margin: 10px 0; /* Margin for spacing */
+  transition: background-color 0.1s; /* Smooth background transition */
+}
+
+.upload-label:hover {
+  background-color: #448b48; /* Darker green on hover */
+}
+
+.upload-input {
+  display: none; /* Hide the default file input */
+}
