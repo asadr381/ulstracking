@@ -28,7 +28,7 @@ function App() {
 
   useEffect(() => {
     // Connect to WebSocket server
-    const socket = io("http://localhost:3001"); // Replace with your server URL
+    const socket = io("https://liveusers-xtjj.onrender.com"); // Replace with your server URL
 
     // Listen for updates on user count
     socket.on("userCount", (count) => {
