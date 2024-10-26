@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect  } from "react";
 import axios from "axios";
 import { HotTable } from "@handsontable/react";
 import { registerAllModules } from "handsontable/registry";
@@ -7,6 +7,7 @@ import "handsontable/dist/handsontable.full.min.css";
 import './App.css';
 import { useNavigate, Routes, Route } from 'react-router-dom';
 import ShipmentDetails from './shipment-details';
+import { io } from "socket.io-client"; 
 
 // Register Handsontable's modules
 registerAllModules();
@@ -21,7 +22,24 @@ function App() {
   const hotRef = useRef(null); // Ref for Handsontable instance
   const abortControllerRef = useRef(null); // Ref to manage abort controller
   const navigate = useNavigate();
+  const [activeUsers, setActiveUsers] = useState(0);
   
+
+
+  useEffect(() => {
+    // Connect to WebSocket server
+    const socket = io("http://localhost:3001"); // Replace with your server URL
+
+    // Listen for updates on user count
+    socket.on("userCount", (count) => {
+      setActiveUsers(count);
+    });
+
+    // Clean up on component unmount
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
   // Dynamically set the API URL based on the environment
   const apiBaseUrl = process.env.NODE_ENV === 'development'
     ? '/track' // Proxy will handle this in development
@@ -124,6 +142,9 @@ function App() {
   return (
     <div className="App">
       <h1>Shipment Tracker</h1>
+      <div style={{ position: "absolute", top: "10px", right: "10px", backgroundColor: "#f0f0f0", padding: "10px", borderRadius: "5px" }}>
+        Active Users: {activeUsers}
+      </div>
 
       <textarea
         rows="10"
