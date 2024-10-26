@@ -8,6 +8,7 @@ import './App.css';
 import { useNavigate, Routes, Route } from 'react-router-dom';
 import ShipmentDetails from './shipment-details';
 import { io } from "socket.io-client"; 
+import * as XLSX from 'xlsx';
 
 // Register Handsontable's modules
 registerAllModules();
@@ -134,6 +135,7 @@ function App() {
     const buttonRenderer = (hotInstance, td, row, col, prop, value, cellProperties) => {
     Handsontable.dom.empty(td);
     const button = document.createElement('button');
+
     button.innerText = "View Details";
  // Use rem for better responsiveness
     button.style.padding = '0.1rem 1rem'; // Use rem units for padding
@@ -145,6 +147,53 @@ function App() {
     button.onclick = () => handleViewDetails(trackingData[row].number);
     td.appendChild(button);
 };
+
+
+
+const handleFileUpload = (event) => {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const content = e.target.result;
+    let numbersArray = [];
+
+    if (file.type === "text/plain") {
+      // Split by newline for text files
+      const lines = content.split(/\r?\n/);
+      lines.forEach(line => {
+        // Match tracking numbers starting with '1Z' followed by 16 alphanumeric characters
+        const matches = line.match(/(1Z[A-Z0-9]{16})/g);
+        if (matches) {
+          numbersArray = numbersArray.concat(matches); // Add found matches to the array
+        }
+      });
+    } else if (file.type === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" || file.type === "application/vnd.ms-excel") {
+      // Read Excel file
+      const workbook = XLSX.read(content, { type: 'binary' });
+      const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+      const sheetData = XLSX.utils.sheet_to_json(firstSheet, { header: 1 });
+      numbersArray = sheetData.flat()
+        .map(num => num.toString().trim())
+        .filter(num => /^1Z[A-Z0-9]{16}$/.test(num)); // Only include valid tracking numbers from Excel
+    }
+
+    if (numbersArray.length > 0) {
+      setTrackingNumbers(numbersArray.join('\n'));
+      setError(""); // Clear any previous error
+    } else {
+      setError("No valid tracking numbers found.");
+    }
+  };
+
+  if (file.type === "text/plain") {
+    reader.readAsText(file); // Use readAsText for plain text files
+  } else {
+    reader.readAsBinaryString(file); // Use readAsBinaryString for Excel files
+  }
+};
+
 
   return (
     <div className="App">
@@ -165,6 +214,22 @@ function App() {
         value={trackingNumbers}
         onChange={(e) => setTrackingNumbers(e.target.value)}
       />
+    
+
+
+    <input
+  id="file-upload"
+  type="file"
+  accept=".txt,.xlsx,.xls"
+  onChange={handleFileUpload}
+  className="upload-input" // Class for styling
+  style={{ display: 'none' }} // Hide default input
+/>
+
+<label className="upload-label" htmlFor="file-upload">
+  Upload File
+</label>
+
 
       <button onClick={handleTrack} disabled={loading || trackingNumbers.trim() === ""}>
         {loading ? "Tracking..." : "Track Shipments"}
@@ -190,6 +255,10 @@ function App() {
           <div className="progress-bar" style={{ width: `${progress}%` }}></div>
         </div>
       )}
+
+
+
+
 
       {error && <p style={{ color: 'red' }}>{error}</p>}
 
