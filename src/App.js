@@ -157,7 +157,7 @@ const handleFileUpload = (event) => {
   const reader = new FileReader();
   reader.onload = (e) => {
     const content = e.target.result;
-    let numbersArray = [];
+    let numbersArray = new Set(); // Use Set to store unique tracking numbers
 
     if (file.type === "text/plain") {
       // Split by newline for text files
@@ -166,7 +166,7 @@ const handleFileUpload = (event) => {
         // Match tracking numbers starting with '1Z' followed by 16 alphanumeric characters
         const matches = line.match(/(1Z[A-Z0-9]{16})/g);
         if (matches) {
-          numbersArray = numbersArray.concat(matches); // Add found matches to the array
+          matches.forEach(match => numbersArray.add(match)); // Add found matches to the Set
         }
       });
     } else if (file.type === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" || file.type === "application/vnd.ms-excel") {
@@ -174,13 +174,15 @@ const handleFileUpload = (event) => {
       const workbook = XLSX.read(content, { type: 'binary' });
       const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
       const sheetData = XLSX.utils.sheet_to_json(firstSheet, { header: 1 });
-      numbersArray = sheetData.flat()
+      sheetData.flat()
         .map(num => num.toString().trim())
-        .filter(num => /^1Z[A-Z0-9]{16}$/.test(num)); // Only include valid tracking numbers from Excel
+        .filter(num => /^1Z[A-Z0-9]{16}$/.test(num)) // Only include valid tracking numbers from Excel
+        .forEach(validNum => numbersArray.add(validNum)); // Add each valid number to the Set
     }
 
-    if (numbersArray.length > 0) {
-      setTrackingNumbers(numbersArray.join('\n'));
+    // Convert the Set to an array and join it with newline characters
+    if (numbersArray.size > 0) {
+      setTrackingNumbers(Array.from(numbersArray).join('\n'));
       setError(""); // Clear any previous error
     } else {
       setError("No valid tracking numbers found.");
