@@ -24,6 +24,9 @@ function App() {
   const abortControllerRef = useRef(null); // Ref to manage abort controller
   const navigate = useNavigate();
   const [activeUsers, setActiveUsers] = useState(0);
+
+
+
   const downloadExcel = () => {
     if (trackingData.length === 0) {
       setError("No data available to download.");
@@ -54,7 +57,14 @@ function App() {
       "Width": tracking.data?.dimension?.width || "N/A",
       "Height": tracking.data?.dimension?.height || "N/A",
       "Length": tracking.data?.dimension?.length || "N/A",
-      "Dimensional Weight": tracking.data?.dimension ? ((tracking.data.dimension.length * tracking.data.dimension.width * tracking.data.dimension.height) / 5000).toFixed(2) : "N/A"
+    "Dimensional Weight": tracking.data?.dimension ? (() => {
+  const dimWeight = (tracking.data.dimension.length * tracking.data.dimension.width * tracking.data.dimension.height) / 5000;
+  if (dimWeight < 20) {
+    return (Math.round(dimWeight * 2) / 2).toFixed(1); // Round to nearest 0.5 if under 20kg
+  } else {
+    return Math.round(dimWeight).toFixed(0); // Round to nearest 1kg if 20kg or over
+  }
+})() : "N/A"
     }));
 
     const worksheet = XLSX.utils.json_to_sheet(worksheetData);
