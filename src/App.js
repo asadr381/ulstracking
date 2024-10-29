@@ -24,7 +24,47 @@ function App() {
   const abortControllerRef = useRef(null); // Ref to manage abort controller
   const navigate = useNavigate();
   const [activeUsers, setActiveUsers] = useState(0);
-  
+  const downloadExcel = () => {
+    if (trackingData.length === 0) {
+      setError("No data available to download.");
+      return;
+    }
+
+    // Prepare the data for export
+    const worksheetData = trackingData.map(tracking => ({
+      "Tracking Number": tracking.number,
+      "ICIRS Number": tracking.data?.referenceNumber?.[0]?.number.slice(0, 6) || "N/A",
+      "Status": tracking.data?.currentStatus?.description || "N/A",
+      "Delivery Date": tracking.data?.deliveryDate?.[0]?.date || "N/A",
+      "Last Scan": tracking.data?.activity?.[0]?.status?.description || "No recent activity",
+      "Last Scan Country": tracking.data?.activity?.[0]?.location?.address?.countryCode || "No recent activity",
+      "Time": tracking.data?.activity?.[0]?.time || "N/A",
+      "Date": tracking.data?.activity?.[0]?.date || "N/A",
+      "Signed By": tracking.data?.deliveryInformation?.receivedBy || "N/A",
+      "Destination Country": tracking.data?.packageAddress?.[1]?.address?.countryCode || "N/A",
+      "Destination City": tracking.data?.packageAddress?.[1]?.address?.city || "N/A",
+      "Slic": tracking.data?.activity?.[0]?.location?.slic || "N/A",
+      "Delivery Type": tracking.data?.deliveryInformation?.location || "N/A",
+      "Service": tracking.data?.service?.description || "N/A",
+      "Label Actual Weight": tracking.data?.weight?.weight || "N/A",
+      "Origin Country": tracking.data?.packageAddress?.[0]?.address?.countryCode || "N/A",
+      "Origin City": tracking.data?.packageAddress?.[0]?.address?.city || "N/A",
+      "Package Count": tracking.data?.packageCount || "N/A",
+      "Shipment Number": tracking.data?.referenceNumber?.[0]?.number || "N/A",
+      "Width": tracking.data?.dimension?.width || "N/A",
+      "Height": tracking.data?.dimension?.height || "N/A",
+      "Length": tracking.data?.dimension?.length || "N/A",
+      "Dimensional Weight": tracking.data?.dimension ? ((tracking.data.dimension.length * tracking.data.dimension.width * tracking.data.dimension.height) / 5000).toFixed(2) : "N/A"
+    }));
+
+    const worksheet = XLSX.utils.json_to_sheet(worksheetData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Tracking Data");
+
+    // Download the Excel file
+    XLSX.writeFile(workbook, "TrackingData.xlsx");
+  };
+
 
   useEffect(() => {
     // Automatically uses wss:// for HTTPS and ws:// for HTTP
@@ -251,7 +291,9 @@ const handleFileUpload = (event) => {
       >
         Stop Tracking
       </button>
-
+      <button onClick={downloadExcel} disabled={trackingData.length === 0}>
+        Download Excel
+      </button>
       {loading && (
         <div className="progress-container">
           <div className="progress-bar" style={{ width: `${progress}%` }}></div>
