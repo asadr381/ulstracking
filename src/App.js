@@ -36,7 +36,7 @@ function App() {
     // Prepare the data for export
     const worksheetData = trackingData.map(tracking => ({
       "Tracking Number": tracking.number,
-      "ICIRS Number": tracking.data?.referenceNumber?.[0]?.number.slice(0, 6) || "N/A",
+      "ICIRS Number": tracking.data?.referenceNumber?.[1]?.number.slice(0, 6) || "N/A",
       "Status": tracking.data?.currentStatus?.description || "N/A",
       "Delivery Date": tracking.data?.deliveryDate?.[0]?.date || "N/A",
       "Last Scan": tracking.data?.activity?.[0]?.status?.description || "No recent activity",
@@ -53,7 +53,7 @@ function App() {
       "Origin Country": tracking.data?.packageAddress?.[0]?.address?.countryCode || "N/A",
       "Origin City": tracking.data?.packageAddress?.[0]?.address?.city || "N/A",
       "Package Count": tracking.data?.packageCount || "N/A",
-      "Shipment Number": tracking.data?.referenceNumber?.[0]?.number || "N/A",
+      "Shipment Number": tracking.data?.referenceNumber?.[1]?.number || "N/A",
       "Width": tracking.data?.dimension?.width || "N/A",
       "Height": tracking.data?.dimension?.height || "N/A",
       "Length": tracking.data?.dimension?.length || "N/A",
