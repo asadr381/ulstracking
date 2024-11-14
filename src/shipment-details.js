@@ -36,7 +36,7 @@ const ShipmentDetails = () => {
           const length = packageData.dimension?.length || 0;
           const width = packageData.dimension?.width || 0;
           const dimWeight = (length * width * height) / 5000;
-          const referenceNumber = packageData.referenceNumber?.[0]?.number || "N/A";
+   const referenceNumber = packageData.referenceNumber?.find(ref => ref.code === "13")?.number || "N/A";
           const firstSixDigits = referenceNumber.slice(0, 6);
           const deliveryDate = packageData.deliveryDate?.[0]?.date;
           const formattedDeliveryDate = deliveryDate 
