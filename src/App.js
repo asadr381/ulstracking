@@ -326,8 +326,9 @@ const handleFileUpload = (event) => {
          const length = tracking.data?.dimension?.length || 0;
          const width = tracking.data?.dimension?.width || 0;
          const dimWeight = (length * width * height) / 5000;
-         const referenceNumber = tracking.data?.referenceNumber?.[0]?.number || "N/A";
-         const firstSixDigits = referenceNumber.slice(0, 6);
+         const referenceNumber1 = tracking.data?.referenceNumber?.find(ref => ref.code === "13")?.number || "N/A";
+
+         const firstSixDigits = referenceNumber1.slice(0, 6);
          const deliveryDate = tracking.data?.deliveryDate?.[0]?.date;
          const formattedDeliveryDate = deliveryDate 
            ? `${deliveryDate.slice(0, 4)}-${deliveryDate.slice(4, 6)}-${deliveryDate.slice(6, 8)}`
@@ -362,7 +363,7 @@ const handleFileUpload = (event) => {
            tracking.data?.packageAddress?.[0]?.address?.countryCode || "N/A",
            tracking.data?.packageAddress?.[0]?.address?.city || "N/A",
            tracking.data?.packageCount || "N/A",
-           tracking.data?.referenceNumber?.[0]?.number || "N/A",
+           referenceNumber1,
            tracking.data?.dimension?.height || "N/A",
            tracking.data?.dimension?.length || "N/A",
            tracking.data?.dimension?.width || "N/A",
