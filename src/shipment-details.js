@@ -49,7 +49,10 @@ const ShipmentDetails = () => {
                 description: activity.status.description || "",
                 city: activity.location.address.city || "",
                 country: activity.location.address.country || "",
-                time: activity.gmtTime || ""
+
+                time: activity.time
+                ? `${activity.time.slice(0, 2)}:${activity.time.slice(2, 4)}:${activity.time.slice(4, 6)}`
+                : ""
               };
             }) || [];
             
@@ -130,7 +133,7 @@ const ShipmentDetails = () => {
         <div><strong>ICIRS Number:</strong> {firstSixDigits}</div>
         <div><strong>Status:</strong> {currentStatus}</div>
         <div><strong>Delivery Date:</strong> {formattedDeliveryDate}</div>
-        <div><strong>Last Scan Date:</strong> {formattedLastScanDate} at {formattedLastScanTime} GMT</div>
+        <div><strong>Last Scan Date:</strong> {formattedLastScanDate} at {formattedLastScanTime} PKT</div>
         <div><strong>Last Scan Country:</strong> {lastScanCountry}</div>
         <div><strong>Received By:</strong> {receivedBy}</div>
         <div><strong>Destination Country:</strong> {destinationCountry}</div>
@@ -148,7 +151,7 @@ const ShipmentDetails = () => {
         {formattedActivities.map((activity, index) => (
           <div key={index} className="timeline-item">
             <h3>{activity.city} {activity.country}</h3>
-            <p>{activity.description} on {activity.date} at {activity.time} GMT</p>
+            <p>{activity.description} on {activity.date} at {activity.time} PKT</p>
           </div>
         ))}
       </div>
