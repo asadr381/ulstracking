@@ -29,7 +29,7 @@
   
   .shipment-details h2 {
     text-align: center;
-    color: #333;
+    color: #351c15;
     margin-bottom: 20px;
   }
   
@@ -45,11 +45,11 @@
     padding: 10px;
     border-radius: 5px;
     border: 1px solid #ddd;
-    color: #333;
+    color: #ffffff;
   }
   
   .details-grid div strong {
-    color: #007bff;
+    color: #ffffff;
   }
   .shipment-details {
     background-color: #f9f9f9;
@@ -64,7 +64,7 @@
   .shipment-details h2 {
     text-align: center;
     font-size: 24px;
-    color: #333;
+    color: #351c15;
     margin-bottom: 20px;
   }
   
@@ -79,22 +79,22 @@
   }
   
   .details-grid div {
-    background-color: #e9f5fc;
+    background-color: #351c15;
     padding: 10px 15px;
     border-radius: 8px;
     font-size: 14px;
-    color: #333;
+    color: #ffffff;
   }
   
   .timeline {
     margin-top: 30px;
-    border-left: 3px solid #3498db;
+    border-left: 3px solid #ffc400;
     padding-left: 20px;
   }
   
   .timeline h3 {
     font-size: 18px;
-    color: #3498db;
+    color: #351c15;
   }
   
   .timeline-item {
@@ -110,7 +110,7 @@
     top: 3px;
     width: 12px;
     height: 12px;
-    background-color: #3498db;
+    background-color: #ffc400;
     border-radius: 50%;
   }
   
